@@ -32,19 +32,51 @@ END
  --total quantity of that product ordered from that city as output.
 
  CREATE PROC sp_product_order_city_sharma
- @productName varchar(20), @top5Cities varchar(250) out
+ @productName varchar(20)
  AS
  BEGIN
- SELECT TOP 5 p.productName, c.City, od.Quantity
- FROM Products p, [Order Details] od, Orders o, Customers c
- WHERE od.ProductID = p.ProductID AND o.OrderID = od.OrderID
- and c.CustomerID = o.CustomerID
- ORDER BY od.Quantity DESC
+ SELECT TOP 5 p.ProductName, o.ShipCity, SUM(od.Quantity) as [total quantity ordered]
+ FROM Products p, [Order Details] od, Orders o
+ WHERE p.ProductName = @productName and od.ProductID = p.ProductID AND o.OrderID = od.OrderID
+ GROUP BY ProductName, o.ShipCity
+ ORDER BY SUM(od.Quantity) DESC
  END
 
+ EXEC sp_product_order_city_sharma 'Queso Cabrales'
 
- --4. Create 2 new tables “people_your_last_name” “city_your_last_name”. City table has two records: {Id:1, City: Seattle}, {Id:2, City: Green Bay}. People has three records: {id:1, Name: Aaron Rodgers, City: 2}, {id:2, Name: Russell Wilson, City:1}, {Id: 3, Name: Jody Nelson, City:2}. Remove city of Seattle. If there was anyone from Seattle, put them into a new city “Madison”. Create a view “Packers_your_name” lists all people from Green Bay. If any error occurred, no changes should be made to DB. (after test) Drop both tables and view.
+ --4. Create 2 new tables “people_your_last_name” “city_your_last_name”. 
+ --City table has two records: {Id:1, City: Seattle}, {Id:2, City: Green Bay}.
+ -- People has three records: {id:1, Name: Aaron Rodgers, City: 2},
+ --{id:2, Name: Russell Wilson, City:1}, {Id: 3, Name: Jody Nelson, City:2}. 
+ --Remove city of Seattle.
+ --If there was anyone from Seattle, put them into a new city “Madison”. 
+ --Create a view “Packers_your_name” lists all people from Green Bay. 
+ --If any error occurred, no changes should be made to DB. (after test) Drop both tables and view.
 
---5. Create a stored procedure “sp_birthday_employees_[you_last_name]” that creates a new table “birthday_employees_your_last_name” and fill it with all employees that have a birthday on Feb. (Make a screen shot) drop the table. Employee table should not be affected.
+ CREATE TABLE people_Sharma(id int, Name varchar(20), City int)
+ INSERT INTO people_Sharma Values (1, 'Aaron Rodgers', 2)
+ INSERT INTO people_Sharma Values (2, 'Russell Wilson', 1)
+ INSERT INTO people_Sharma Values (3, 'Jody Nelson', 2)
+
+ Create Table city_Sharma(id int, City varchar(30))
+ INSERT INTO city_Sharma Values (1, 'Seattle')
+ INSERT INTO city_Sharma Values (2, 'Green Bay')
+
+ if exists(select id from people_Sharma where city = (select id from city_Sharma where city='Seattle')) 
+ begin insert into city_Sharma values (3, 'Madison') 
+ update people_Sharma SET city=3 where id in (select id from people_Sharma where city = (select id from city_Sharma where city='Seattle')) end 
+ delete from people_Sharma where city = (select id from city_Sharma where city='Seattle')
+
+ CREATE VIEW Packers_Sharma as
+ Select name from people_Sharma 
+ where id = (select id from city_Sharma where city = 'Green Bay')
+
+ drop table people_Sharma
+ drop table city_Sharma
+ drop view Packers_Sharma
+
+--5. Create a stored procedure “sp_birthday_employees_[you_last_name]” that creates a new table “birthday_employees_your_last_name” and fill it with all employees that have a birthday on Feb. 
+--(Make a screen shot) drop the table. 
+--Employee table should not be affected.
 
 --6.How do you make sure two tables have the same data?
