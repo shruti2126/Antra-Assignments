@@ -25,3 +25,30 @@ Test Your Knowledge
   
   4. What the purpose of Garbage Collector in .NET?
   - The purpose of garbage collector in .NET is to clear out the heap memory when not in use.
+
+
+Controlling Flow and Converting Types
+Test your Knowledge
+1. What happens when you divide an int variable by 0? 
+  Divide by Zero Exception (Compiler error)
+2. What happens when you divide a double variable by 0?
+  Infinity as result
+3. What happens when you overflow an int variable, that is, set it to a value beyond its
+range? 
+  Compiler error (suggests converting it to long or double)
+4. What is the difference between x = y++; and x = ++y;? 
+  y is increased after setting x to y in the former, but y is increased first in the latter.
+5. What is the difference between break, continue, and return when used inside a loop
+statement?
+  break will exit loop, continue will skip code below but loop continues, return will exit entire method call stack.
+6. What are the three parts of a for statement and which of them are required?
+  The initialization of counter variable, the condition (boolean result) specifiying when to stop loop and the incrementation after every iteration (the second is required)
+7. What is the difference between the = and == operators? 
+  the = opeator is used to set the value of a variable, while  == is used to compare two values of the same type
+8. Does the following statement compile? for ( ; true; ) ;
+  yes, it compiles
+9. What does the underscore _ represent in a switch expression?
+  The underscore (_) character replaces the default keyword to signify that it should match anything if reached.
+10. What interface must an object implement to be enumerated over by using the foreach
+statement?
+The IEnumerable interface
